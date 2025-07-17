@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ishwar Bhai Paintworks</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Flash Message -->
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <div class="toast" id="flash-toast">
+        {{ messages[0] }}
+        </div>
+    {% endif %}
+    {% endwith %}
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">Ishwar Bhai Paintworks</div>
+    <ul class="nav-links">
+      <li><a href="#">Home</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Quotation</a></li>
+      <li><a href="#">Gallery</a></li>
+        {% if current_user.is_authenticated %}
+        <li><a href="/logout">Logout</a></li>
+        {% else %}
+        <li><a href="/login">Login</a></li>
+        {% endif %}
+
+    </ul>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h1>Bringing Color to Life</h1>
+    <p>Expert painting & polish solutions for homes, showrooms, and hotels</p>
+    <a href="#contact" class="btn-primary">Get a Quotation</a>
+  </section>
+
+  <!-- Services Section -->
+  <section class="services">
+    <h2>Our Services</h2>
+    <div class="service-cards">
+      <div class="card">Acrylic & Royal Paint</div>
+      <div class="card">Melamine & PU Polish</div>
+      <div class="card">Duco & Lamination</div>
+      <div class="card">Rustic Texture & Zink</div>
+    </div>
+  </section>
+  
+  <!-- Reviews Section -->
+   <section class="reviews">
+    <h2>Client Reviews</h2>
+    {% for review in reviews %}
+        <div class="review-card">
+        <p>"{{ review.comment }}"</p>
+        <span>- {{ review.name }} ({{ review.rating }}/5)</span>
+        </div>
+    {% else %}
+        <p>No reviews yet.</p>
+    {% endfor %}
+    </section>
+    
+    <!-- Submit Review (Visible only if logged in) -->
+    {% if current_user.is_authenticated %}
+    <section class="submit-review">
+    <h2>Leave a Review</h2>
+    <form method="POST" action="/submit_review">
+        <label>Rating (1 to 5):</label>
+        <input type="number" name="rating" step="0.5" min="1" max="5" required />
+        <textarea name="comment" placeholder="Write your review..." required></textarea>
+        <button type="submit" class="btn-primary">Submit Review</button>
+    </form>
+    </section>
+    {% endif %}
+
+
+
+
+    <!-- Contact Form -->
+    <section class="contact" id="contact">
+        <h2>Contact Us</h2>
+        <form method="POST" action="#contact">
+            <input type="text" name="name" placeholder="Name" required />
+            <input type="email" name="email" placeholder="Email" required />
+            <input type="text" name="phone" placeholder="Phone" required />
+            <input type="text" name="address" placeholder="Address" required />
+            <textarea name="message" placeholder="Your Message" required></textarea>
+            <button type="submit" class="btn-primary">Send Message</button>
+        </form>
+    </section>
+
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 Ishwar Bhai Paintworks. All rights reserved.</p>
+  </footer>
+
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
