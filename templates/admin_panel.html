@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <div class="admin-container">
+    <h2>Admin Panel</h2>
+    <p>Welcome, {{ current_user.name }}</p>
+
+    <h3>Contacts</h3>
+    <ul>
+      {% for contact in contacts %}
+        <li>{{ contact.name }} - {{ contact.email }} - {{ contact.phone }}</li>
+      {% endfor %}
+    </ul>
+
+    <h3>Reviews</h3>
+    <ul>
+      {% for review in reviews %}
+        <li>{{ review.name }} ({{ review.rating }}/5): {{ review.comment }}</li>
+      {% endfor %}
+    </ul>
+
+    <h3>Gallery Sites</h3>
+    <ul>
+      {% for site in gallery_sites %}
+        <li>{{ site.site_name }} ({{ site.images | length }} images)</li>
+      {% endfor %}
+    </ul>
+
+    {% if quotations %}
+    <h3>Quotations</h3>
+    <ul>
+      {% for quote in quotations %}
+        <li>{{ quote.name }} - {{ quote.email }}</li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </div>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Gallery - Ishwar Bhai Paintworks</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <h2>Our Completed Sites</h2>
+  <ul>
+    {% for site in sites %}
+      <li><a href="/gallery/{{ site.site_name }}">{{ site.site_name }}</a></li>
+    {% else %}
+      <p>No sites found.</p>
+    {% endfor %}
+  </ul>
+</body>
+</html>

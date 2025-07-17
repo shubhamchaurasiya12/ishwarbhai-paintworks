@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{ site.site_name }} - Gallery</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <h2>{{ site.site_name }}</h2>
+
+  <div class="gallery-grid">
+    {% for img in site.images %}
+      <div class="gallery-card">
+        <img src="{{ img.image_url }}" alt="{{ img.title }}">
+        <h4>{{ img.title }}</h4>
+        <p>{{ img.description }}</p>
+      </div>
+    {% endfor %}
+  </div>
+</body>
+</html>

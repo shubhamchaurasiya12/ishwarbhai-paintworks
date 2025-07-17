@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Quotation Request</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="auth-container">
+    <h2>Request a Quotation</h2>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="toast flash-toast">{{ messages[0] }}</div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="/quotation">
+      <input type="text" name="name" placeholder="Your Name" required>
+      <input type="email" name="email" placeholder="Your Email" required>
+      <input type="text" name="phone" placeholder="Your Phone" required>
+      <textarea name="project" placeholder="Project details..." required></textarea>
+      <button type="submit" class="btn-primary">Submit</button>
+    </form>
+
+    {% if show_download %}
+      <a href="{{ url_for('static', filename='pdfs/New_Quotation.pdf') }}" download class="btn-primary" style="margin-top:1rem; display:inline-block;">Download Quotation PDF</a>
+    {% endif %}
+  </div>
+</body>
+</html>
