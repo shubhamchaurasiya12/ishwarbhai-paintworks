@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: ishwar-paintworks
+    env: python
+    buildCommand: ""
+    startCommand: gunicorn app:app
+    envVars:
+      - key: MONGO_URI
+        value: mongodb+srv://shubhamchaurasiya5002:nA8kaKn6hkp4Xxua@cluster0.0jjm8on.mongodb.net/ishwarbhai_paintworks?retryWrites=true&w=majority&appName=Cluster0
+      - key: SECRET_KEY
+        value: ad074267ae0342bee68d770bfa6c2a1f20af3548aad996a3
+      - key: ADMIN_EMAIL
+        value: admin@paintworks.com
