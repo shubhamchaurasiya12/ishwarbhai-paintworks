@@ -4,104 +4,214 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Ishwar Bhai Paintworks</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
   <!-- Google Fonts -->
-   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
   <!-- Font Awesome -->
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
 </head>
 <body>
-    <!-- Flash Message -->
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-        <div class="toast" id="flash-toast">
-        {{ messages[0] }}
-        </div>
-    {% endif %}
-    {% endwith %}
+  <!-- Flash Message -->
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+      <div class="toast" id="flash-toast">
+      {{ messages[0] }}
+      </div>
+  {% endif %}
+  {% endwith %}
 
   <!-- Navbar -->
   <nav class="navbar">
-    <div class="logo">Ishwar Bhai Paintworks</div>
+    <div class="logo"><i class="fas fa-paint-roller"></i> Ishwar Bhai Paintworks</div>
     <ul class="nav-links">
       <li><a href="#">Home</a></li>
-      <li><a href="#">About</a></li>
+      <li><a href="#about">About</a></li>
       <li><a href="/quotation">Quotation</a></li>
       <li><a href="/gallery">Gallery</a></li>
-        {% if current_user.is_authenticated %}
-        <li><a href="/logout">Logout</a></li>
-        {% else %}
-        <li><a href="/login">Login</a></li>
-        {% endif %}
-
-        {% if current_user.is_authenticated and current_user.email == 'admin@paintworks.com' %}
-        <li><a href="/admin">Admin Panel</a></li>
-        {% endif %}
-
-
+      <li><a href="#faq">FAQ</a></li>
+      {% if current_user.is_authenticated %}
+      <li><a href="/logout">Logout</a></li>
+      {% else %}
+      <li><a href="/login">Login</a></li>
+      {% endif %}
+      {% if current_user.is_authenticated and current_user.email == 'admin@paintworks.com' %}
+      <li><a href="/admin">Admin Panel</a></li>
+      {% endif %}
     </ul>
+    <!-- Hamburger Button -->
+    <div class="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
   </nav>
 
   <!-- Hero Section -->
   <section class="hero">
     <h1>Bringing Color to Life</h1>
-    <p>Expert painting & polish solutions for homes, showrooms, and hotels</p>
-    <a href="/quotation" class="btn-primary">Get a Quotation</a>
+    <p>Professional painting & polish services for homes, showrooms, hotels, and more.</p>
+    <a href="/gallery" class="btn-primary">Our Previous Projects</a>
   </section>
 
   <!-- Services Section -->
   <section class="services fade-in">
     <h2>Our Services</h2>
     <div class="service-cards">
-      <div class="card">Acrylic & Royal Paint</div>
-      <div class="card">Melamine & PU Polish</div>
-      <div class="card">Duco & Lamination</div>
-      <div class="card">Rustic Texture & Zink</div>
+      <div class="card"><i class="fas fa-brush"></i><h3>Acrylic & Royal Paint</h3></div>
+      <div class="card"><i class="fas fa-spray-can"></i><h3>Melamine & PU Polish</h3></div>
+      <div class="card"><i class="fas fa-fill-drip"></i><h3>Duco & Lamination</h3></div>
+      <div class="card"><i class="fas fa-paint-roller"></i><h3>Rustic Texture & Zink</h3></div>
     </div>
   </section>
-  
-  <!-- Reviews Section -->
-   <section class="services fade-in">
-    <h2>Client Reviews</h2>
-    {% for review in reviews %}
-        <div class="review-card">
-        <p>"{{ review.comment }}"</p>
-        <span>- {{ review.name }} ({{ review.rating }}/5)</span>
-        </div>
-    {% else %}
-        <p>No reviews yet.</p>
+
+  <!-- About Section -->
+  <section id="about" class="about fade-in">
+    <h2>About Us</h2>
+    <p>
+      With over 20 years of experience, Ishwar Bhai Paintworks has been a trusted name in 
+      home, showroom, and hotel painting services. Our skilled team of 20+ professionals 
+      brings expertise in modern painting, polishing, and texturing techniques. 
+      We are dedicated to turning your vision into reality with a touch of color and creativity.
+    </p>
+    <div class="about-icons">
+      <div><i class="fas fa-award"></i><h3>20+ Years</h3><p>Industry Experience</p></div>
+      <div><i class="fas fa-users"></i><h3>400+</h3><p>Happy Clients</p></div>
+      <div><i class="fas fa-paint-brush"></i><h3>400+</h3><p>Projects Completed</p></div>
+    </div>
+  </section>
+
+
+  <!-- Why Choose Us Section -->
+  <section class="choose-us fade-in">
+    <h2>Why Choose Us?</h2>
+    <div class="choose-cards">
+      <div class="card"><i class="fas fa-certificate"></i><h3>Quality Work</h3><p>Premium paints, long-lasting polish, and detailed finishes.</p></div>
+      <div class="card"><i class="fas fa-clock"></i><h3>On-Time Delivery</h3><p>We respect deadlines and complete projects as promised.</p></div>
+      <div class="card"><i class="fas fa-handshake"></i><h3>Trusted Team</h3><p>Friendly professionals who understand your vision and budget.</p></div>
+    </div>
+  </section>
+
+    <!-- Gallery Preview -->
+  <section class="gallery-preview fade-in">
+    <h2>Our Recent Work</h2>
+    <div class="gallery-grid">
+      <img src="{{ url_for('static', filename='images/image1.png') }}" alt="Work 1">
+      <img src="{{ url_for('static', filename='images/image2.png') }}" alt="Work 1">
+      <img src="{{ url_for('static', filename='images/image3.jpg') }}" alt="Work 3">
+    </div>
+    <a href="/gallery" class="btn-primary">View Full Gallery</a>
+  </section>
+
+  <!-- Process Section -->
+  <section class="process fade-in">
+    <h2>Our Work Process</h2>
+    <div class="process-steps">
+      <div><i class="fas fa-phone"></i><h3>1. Consultation</h3><p>Discuss your requirements with our experts.</p></div>
+      <div><i class="fas fa-clipboard-list"></i><h3>2. Quotation</h3><p>Get a detailed quotation for your project.</p></div>
+      <div><i class="fas fa-paint-brush"></i><h3>3. Execution</h3><p>Our team delivers seamless painting & polish work.</p></div>
+      <div><i class="fas fa-smile"></i><h3>4. Satisfaction</h3><p>Enjoy the beauty of your renewed space!</p></div>
+    </div>
+  </section>
+
+
+
+<section class="reviews fade-in">
+  <h2>What Our Clients Say</h2>
+
+  <!-- Overall Rating -->
+  <div class="overall-rating">
+    <span>Overall Rating: </span>
+    {% for i in range(1,6) %}
+      {% if i <= overall_rating %}
+        <span class="star filled">★</span>
+      {% elif i - overall_rating < 1 %}
+        <span class="star half">★</span>
+      {% else %}
+        <span class="star">★</span>
+      {% endif %}
     {% endfor %}
-    </section>
-    
-    <!-- Submit Review (Visible only if logged in) -->
-    {% if current_user.is_authenticated %}
-    <section class="submit-review">
+    <span>({{ overall_rating }} / 5)</span>
+    <span class="total-reviews"> - {{ total_reviews }} Reviews</span>
+  </div>
+
+  <div class="reviews-grid">
+    {% for review in reviews %}
+      <div class="review-card">
+        <div class="review-header">
+          <div class="review-avatar">
+            {% if review.image %}
+              <img src="{{ review.image }}" alt="{{ review.name }}">
+            {% else %}
+              <span>{{ review.name|first }}</span>
+            {% endif %}
+          </div>
+          <div class="review-info">
+            <h3>{{ review.name }}</h3>
+            <p class="review-date">{{ review.date.strftime('%b %d, %Y') }}</p>
+          </div>
+        </div>
+
+        <div class="review-stars">
+          {% for i in range(1,6) %}
+            {% if i <= review.rating %}
+              <span class="star filled">★</span>
+            {% else %}
+              <span class="star">★</span>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        <p class="review-text">{{ review.comment }}</p>
+      </div>
+    {% else %}
+      <p>No reviews yet.</p>
+    {% endfor %}
+  </div>
+</section>
+
+  
+  <!-- Submit Review -->
+  {% if current_user.is_authenticated %}
+  <section class="submit-review">
     <h2>Leave a Review</h2>
     <form method="POST" action="/submit_review">
-        <label>Rating (1 to 5):</label>
-        <input type="number" name="rating" step="0.5" min="1" max="5" required />
+        <input type="number" name="rating" step="0.5" min="1" max="5" required placeholder="Rating (1 to 5)" />
         <textarea name="comment" placeholder="Write your review..." required></textarea>
         <button type="submit" class="btn-primary">Submit Review</button>
     </form>
-    </section>
-    {% endif %}
+  </section>
+  {% endif %}
 
+  <!-- FAQ Section -->
+  <section id="faq" class="faq fade-in">
+    <h2>Frequently Asked Questions</h2>
+    <div class="faq-item"><h3><i class="fas fa-question-circle"></i> How long does a typical project take?</h3><p>It depends on the size of your project. Homes take 5–7 days, while larger projects may take longer.</p></div>
+    <div class="faq-item"><h3><i class="fas fa-question-circle"></i> Do you provide free quotations?</h3><p>Yes, our team provides detailed quotations at no extra cost.</p></div>
+    <div class="faq-item"><h3><i class="fas fa-question-circle"></i> What brands of paint do you use?</h3><p>We use only trusted brands like Asian Paints, Nerolac, and Dulux.</p></div>
+  </section>
 
+  <!-- Contact Form -->
+  <section class="contact" id="contact">
+    <h2>Contact Us</h2>
+    <form method="POST" action="{{ url_for('home') }}">
+      <input type="text" name="name" placeholder="Name" required />
+      <input type="email" name="email" placeholder="Email" required />
+      <input type="text" name="phone" placeholder="Phone" required />
+      <input type="text" name="address" placeholder="Address" required />
+      <button type="submit" class="btn-primary">Contact Us</button>
+    </form>
+  </section>
 
-
-    <!-- Contact Form -->
-    <section class="contact" id="contact">
-        <h2>Contact Us</h2>
-        <form method="POST" action="#contact">
-            <input type="text" name="name" placeholder="Name" required />
-            <input type="email" name="email" placeholder="Email" required />
-            <input type="text" name="phone" placeholder="Phone" required />
-            <input type="text" name="address" placeholder="Address" required />
-            <textarea name="message" placeholder="Your Message" required></textarea>
-            <button type="submit" class="btn-primary">Send Message</button>
-        </form>
-    </section>
-
+  <!-- Call to Action -->
+  <section class="cta fade-in">
+    <h2>Ready to Give Your Space a Fresh Look?</h2>
+    <p>Get in touch today and let’s bring your vision to life with colors that inspire.</p>
+    <a href="/quotation" class="btn-primary">Request a Free Quotation</a>
+  </section>
 
   <!-- Footer -->
   <footer>
@@ -109,5 +219,14 @@
   </footer>
 
   <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  <script>
+    const hamburger = document.querySelector(".hamburger");
+    const navLinks = document.querySelector(".nav-links");
+
+    hamburger.addEventListener('click', () => {
+      navLinks.classList.toggle('active');
+      hamburger.classList.toggle('active');
+    });
+  </script>
 </body>
 </html>

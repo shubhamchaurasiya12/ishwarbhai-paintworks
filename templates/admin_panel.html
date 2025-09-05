@@ -1,12 +1,89 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Admin Panel</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel - Ishwar Bhai Paintworks</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f9f9f9; /* off-white background */
+      margin: 0;
+      padding: 0;
+    }
+
+    .admin-container {
+      max-width: 900px;
+      margin: 3rem auto;
+      background: #fff;
+      padding: 2rem 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    }
+
+    .admin-container h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .admin-container p {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: #555;
+    }
+
+    h3 {
+      margin-top: 2rem;
+      color: #444;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 0.3rem;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0.5rem 0 1rem 0;
+    }
+
+    li {
+      background: #f5f5f5;
+      margin-bottom: 0.5rem;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    li:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .section-label {
+      font-weight: 500;
+      color: #666;
+    }
+
+    /* Responsive for small screens */
+    @media(max-width: 600px){
+      .admin-container {
+        padding: 1.5rem 1rem;
+      }
+      li {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="admin-container">
@@ -16,21 +93,36 @@
     <h3>Contacts</h3>
     <ul>
       {% for contact in contacts %}
-        <li>{{ contact.name }} - {{ contact.email }} - {{ contact.phone }}</li>
+        <li>
+          <span>{{ contact.name }}</span>
+          <span>{{ contact.email }} | {{ contact.phone }}</span>
+        </li>
       {% endfor %}
     </ul>
 
     <h3>Reviews</h3>
     <ul>
       {% for review in reviews %}
-        <li>{{ review.name }} ({{ review.rating }}/5): {{ review.comment }}</li>
+        <li id="review-{{ review._id }}">
+          <span>
+            {{ review.name }} ({{ review.rating }}/5)
+          </span>
+          <span contenteditable="true" class="editable-comment" data-id="{{ review._id }}">
+            {{ review.comment }}
+          </span>
+          <button class="update-btn" data-id="{{ review._id }}">💾 Update</button>
+          <a href="{{ url_for('delete_review', id=review._id) }}" onclick="return confirm('Are you sure?')">🗑️ Delete</a>
+        </li>
       {% endfor %}
     </ul>
 
     <h3>Gallery Sites</h3>
     <ul>
       {% for site in gallery_sites %}
-        <li>{{ site.site_name }} ({{ site.images | length }} images)</li>
+        <li>
+          <span>{{ site.site_name }}</span>
+          <span>{{ site.images | length }} images</span>
+        </li>
       {% endfor %}
     </ul>
 
@@ -38,10 +130,39 @@
     <h3>Quotations</h3>
     <ul>
       {% for quote in quotations %}
-        <li>{{ quote.name }} - {{ quote.email }}</li>
+        <li>
+          <span>{{ quote.name }}</span>
+          <span>{{ quote.email }}</span>
+        </li>
       {% endfor %}
     </ul>
     {% endif %}
   </div>
+
+<script>
+  document.querySelectorAll('.update-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.getAttribute('data-id');
+      const comment = document.querySelector(`#review-${id} .editable-comment`).innerText;
+
+      fetch(`/admin/update_review/${id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ comment })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.success){
+          alert('Review updated!');
+        } else {
+          alert('Update failed!');
+        }
+      });
+    });
+  });
+</script>
+
 </body>
 </html>

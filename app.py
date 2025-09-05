@@ -1,7 +1,11 @@
-from flask import Flask, render_template, request, redirect, flash
+from flask import Flask, render_template, request, redirect, url_for, flash
 from pymongo import MongoClient
 from datetime import datetime
+import smtplib 
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from bson.objectid import ObjectId
+from pymongo import DESCENDING
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import session
@@ -18,6 +22,8 @@ app.secret_key = os.environ.get("SECRET_KEY")
 # MongoDB setup
 client = MongoClient(os.environ.get("MONGO_URI"))
 db = client["ishwarpaintworks"]
+
+
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
 ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL")
@@ -59,38 +65,73 @@ def load_user(user_id):
 
 @app.route("/", methods=["GET", "POST"])
 def home():
-    # Contact form handling (from Phase 3)
-    if request.method == "POST" and "name" in request.form and "message" in request.form:
-        # This POST is for contact form
-        contact_data = {
-            "name": request.form.get("name"),
-            "email": request.form.get("email"),
-            "phone": request.form.get("phone"),
-            "address": request.form.get("address"),
-            "message": request.form.get("message"),
+    if request.method == "POST" and "name" in request.form and "phone" in request.form:
+        # Extract form data
+        name = request.form.get("name")
+        email = request.form.get("email")
+        phone = request.form.get("phone")
+        address = request.form.get("address")
+
+        # Save to MongoDB
+        contact_collection.insert_one({
+            "name": name,
+            "email": email,
+            "phone": phone,
+            "address": address,
             "submitted_at": datetime.now()
-        }
+        })
 
-        db.contact.insert_one(contact_data)
-        flash("Thank you! We have received your message.")
-        return redirect("/")
-    # Get reviews from DB
-    reviews = list(reviews_collection.find().sort("date", -1))  # sort newest first (optional)
-    return render_template("home.html", reviews=reviews)
+        # Send Email
+        sender_email = os.getenv("EMAIL_USER")       # your gmail
+        sender_password = os.getenv("EMAIL_PASS") # app password
+        receiver_email = os.getenv("REC_EMAIL")      # your admin email
 
-@app.route("/submit_review", methods=["POST"])
-@login_required
-def submit_review():
-    rating = float(request.form["rating"])
-    comment = request.form["comment"]
-    reviews_collection.insert_one({
-        "name": current_user.name,
-        "rating": rating,
-        "comment": comment,
-        "date": datetime.now()
-    })
-    flash("Review submitted!")
-    return redirect("/")
+        try:
+            msg = MIMEMultipart()
+            msg["From"] = sender_email
+            msg["To"] = receiver_email
+            msg["Subject"] = "📩 New Contact Form Submission"
+
+            body = f"""
+            Someone submitted the contact form:
+
+            Name: {name}
+            Email: {email}
+            Phone: {phone}
+            Address: {address}
+            """
+
+            msg.attach(MIMEText(body, "plain"))
+
+            with smtplib.SMTP("smtp.gmail.com", 587) as server:
+                server.starttls()
+                server.login(sender_email, sender_password)
+                server.send_message(msg)
+
+            print("✅ Email sent successfully")
+        except Exception as e:
+            print("❌ Error sending email:", e)
+
+
+        # Show success message to user
+        flash("✅ Thank you! We will call you back soon.")
+        return redirect(url_for("home"))
+
+    # Load reviews for homepage
+    reviews = list(reviews_collection.find().sort("date", -1).limit(6))
+
+    # Calculate overall rating
+    all_reviews = list(reviews_collection.find())
+    total_reviews = len(all_reviews)
+    if total_reviews > 0:
+        overall_rating = round(sum(r.get('rating', 0) for r in all_reviews) / total_reviews, 1)
+    else:
+        overall_rating = 0
+
+    return render_template("home.html",
+                           reviews=reviews,
+                           overall_rating=overall_rating,
+                           total_reviews=total_reviews)
 
 
 @app.route("/signup", methods=["GET", "POST"])
@@ -201,13 +242,11 @@ def quotation():
         name = request.form["name"]
         email = request.form["email"]
         phone = request.form["phone"]
-        project = request.form["project"]
 
         quotation_collection.insert_one({
             "name": name,
             "email": email,
             "phone": phone,
-            "project": project,
             "date": datetime.now()
         })
 
